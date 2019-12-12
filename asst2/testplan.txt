@@ -1,0 +1,30 @@
+Test Plan:
+
+Test 0: General trend of time vs. size of list. 
+	- This was done with our searchtest program, in the program we
+	ran the search code for the respective program and calculated 
+	the time it took to run the search on lists of 100, 500, and 1000
+	for 1, 5, 10, 15, and 20 processes/threads. We recorded the time
+	it took for each of the 15 cases, wrote them down took note of
+	the trends each type of program had.
+
+Test 1: Finding the tradeoff point for Processes vs Threads
+	- For this test we looked over the data we recorded in the first
+	test and found the runtimes of processes and threads that were 
+	closest to eachother and ran tests on sizes close to those cases. 
+	-For lists of size 100, the tradeoff point is 5 processes and 
+	20 threads. For lists of size 500, the tradeoff point for our
+	data is 20 threads and 5 processes as well. For lists of size
+	1000, the tradeoff point was 15 threads and 5 processes.
+	
+Test 2: Finding the tradeoff point for parallelism for Processes and threads
+	- For this test we also looked over the data recorded in the first
+	test and used that to find where the total time starts to be longer 
+	for threads and for processes.
+	- Processes: Our implementation of the Process search seemed to imply
+	that more processes is always slower, although we could have something
+	else happening that is making more processes be less efficient. Our
+	test show having a single process will always be faster.
+	- Threads: Our implementation of the Thread search shows us that at
+	around 15 threads our search begins to slow down. Our data for 10 
+	threads is significantly faster than 15 or 20 threads.

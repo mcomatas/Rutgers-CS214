@@ -1,0 +1,25 @@
+Testcases:
+
+For all of our testcases we made the constraints as best as possible to avoid any and all errors that may occur
+during workloads like C, D, E, and F.
+
+Testcase E:
+----------
+
+This test cases was to test malloc and see how well it would handle mallocing large chuncks of memory and 
+mallocing until capactiy. It malloced 10 chunks of 300(plus metadata) bytes into the heap, and then freed
+everything at the end. We chose 10 because using 11 chuncks would cause the program to error on rare 
+occasions stating the user tried to allocate too much space. With 12 chunks it would cause the same error
+every time. The idea was to test if our malloc could handle allocating a larger amount of bytes than the
+previous workloads and if it could handleallocating all of its space and then freeing it.
+
+
+Testcase F:
+----------
+
+This test cases was similar to testcase E, but this time after allocatig the max space we freed blocks in between
+the active blocks. We malloced until capacity, and then freed every other block, then re malloced those free chunks,
+then freed everything. This workload was to test if our free could free blocks in between active blocks and to see
+if our malloc could malloc chunks in between already active chunks. We chose a smaller chunk to malloc (200 bytes)
+when re mallocing so this creates more chunks in the heap, between freed and malloced chunks, than when we had
+freed every other block.

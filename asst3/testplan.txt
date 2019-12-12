@@ -1,0 +1,56 @@
+Our testplan for DUMB server and client:
+
+To test DUMB server and client we tested every possibility for every kind of command the client can give. The 
+very first thing is to make sure a client is able to connect to the server with no issues, this means the 
+client should get the message "HELLO DUMB v0 ready!" from the server. This means a client initiated a session 
+with the server successfully. If the connection was not set up correctly an error message was sent. This was
+done by using the wrong IP address or port intentionally.
+
+Once a connection is set up properly, we needed to test if a client could stop a session properly too. The client
+sends "quit" to the server and expects no response in return and if no response is recieved the client should
+be prompted a message that reads "<socket can not be read from and was closed on server side>". This should be
+done while a message box is opened and while none are opened to test if the server closes it properly. If the client
+does recieve a message back then the client should be prompted any other message and the connection should not
+be closed.
+
+Next we had to test the functionality of the message boxes once we knew that the connection worked properly. We
+first tested creating a message box. The client would enter in "create" and then a name of the message box 5-25
+characters long and starting with an alphabetical character. This worked as intended. We also had to test if
+the correct error were reported. We tried creating a message box with a name that already exists to get an error
+and we tried creating a message box with a slightly malformed message to get that error.
+
+Following creating a box we had to test if a client could open that box and access its messages. We tested the open
+box command correctly the first time and opened the previously created box. This worked as intended. Then we tried
+opening a box that didn't exist to get the proper error prompted to the user. Then we tried opening the box that
+was already opened, and then we tested opening with a malformed message. All errors were reported appropriately.
+
+Once a message box was opened we had to test if we could put messages in the box correctly. We tried putting a
+message in and it worked as intended. We also had to test putting in a message when the the command was slightly
+malformed and this worked as intended as well. We then had to test and see that we got the appropriate error when
+using the put command when a message box was not opened. This error was reported correctly as well.
+
+After putting messages in the box we had to test if the next message command worked as intended. We tested the next  
+message command under the conditions that the message box was empty, there was no message box opened, and that the
+next message command was in some way malformed. All of those error were reported correctly. In addition we tested
+to see if the next message command worked as intented with proper format, which it did. This worked originally and at
+the last minute broke, but we did not change anything which confused us.
+
+Once all the message are put in and the next message command was working, we tested to make sure that the close box 
+command was working properly. We tested under proper conditions first, closing a box with a correct name that was
+already opened. This worked as intended. We also tested under the conditions that what if no messgae box was opened
+or if the close box command was malformed. Both of these errors were reported correctly to the client.
+
+The last command to test was the delete box command. Delete box gave us the most trouble. Delete would sometimes work,
+but other times not. Our logic seemed to be correct and debugging it was tricky. It would work when there was multiple
+boxes, but fail under the condition that there was only one box. Sometimes it would delete the wrong box which we
+recognized to be a critical error, but could not find the source of that error. Delete box was difficult to implement
+and the hardest to test when going through our tests.
+
+After testing all the commands we tested to see if we could connect multiple clients to the server using threads. We
+had to make sure access to message boxes were blocked correctly when multiple users tried to access it or that
+deletions couldn't occur when message boxes were being accessed.
+
+After all of this testing we knew that our client/server was working properly and that the messgae boxes were working
+properly as well to the best of our ability. 
+
+Extra Credit: One user can open multiple boxes at once.

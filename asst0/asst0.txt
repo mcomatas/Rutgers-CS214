@@ -1,0 +1,225 @@
+Walking in GCC's Footsteps:
+
+
+Note: This project is individual. Be sure to do your own work.
+
+Abstract
+    Of all the tasks you will need to complete in time or behaviors to encode, scanning and parsing tend to crop up over and over again in some form. When scanning you take a sequence of characters and break them in to tokens and when parsing you evaluate the tokens based on some rule set in order to determine if they are not only used correctly, but also what computations they represent. In this assignment you'll get some practice with C by scanning and doing some simple parsing. This should also give you some insight in to interpreting what the C compiler tells you when it finds problems.
+
+    
+    
+Introduction    
+    The language you are working with consists of two kinds of operators: logical and arithmetic. The logical operators are: {AND, OR, NOT} and are applied to the values: {true, false}. The arithmetic operators are: {-, +, *, /} and are applied to the values: {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}.
+
+    You'll receive all your tokens in a single command line argument, and your code should take exactly one argument. You can count on whitespace (e.g. ' ') to divide tokens, however it may behoove you to make your delimiter parameterizable for future use. The null terminator ('\0') will end your input and the line you are evaluating.
+    
+    Once you have detected all the tokens, you next should make sure the tokens make sense. This language is an infix language, meaning all binary operators appear between their operands:
+        Legal expressions:        Illegal expressions:
+        1 + 2                               1 +2
+        4 - 9                                4 -
+        true AND false                True AND false
+        false OR true                  fals OR 1
+
+    Logical NOT is your only unary operator. Its argument should appear directly after it: NOT false.
+    
+    If there are multiple expressions per line, they should be separated by a semicolon (';'):
+        1 + 2; 9 * 2
+        true AND true; 9 / 3
+
+    Output should consist of:
+        For a correct expression:
+            Found <X> expressions: <N> logical and <M> arithmetic.
+            OK.
+            
+        For an incorrect expression:
+            Found <X> expressions; <N> logical and <M> arithmetic.
+            Error: <error type> in expression <expression number>: <description> in:
+                <expression error was found in, or expression fragment/token>
+    
+        For instance:
+            > ./check "1 +2"
+            Found 1 expressions: 0 logical and 0 arithmetic.
+            Error: Parse error in expression 0: unknown operator
+                "+2"
+                
+            > ./check ""
+            Found 1 expressions: 0 logical and 0 arithmetic.
+            Error: Scan error in expression 0: incomplete expression
+                ""
+            
+            > ./check "true AND false OR true"
+            Found 1 expressions: 1 logical and 0 arithmetic.    
+            Error: Parse error in expression 0: expression was not ended
+(Note: 'expression was not ended' is not one of the canonical errors listed below in the FAQ, however, since it is here, I am I fine if you use it. Truly, this error ought to be an 'incomplete expression', since it is missing the semicolon required to end the expression)
+               "true AND false OR"
+            Error: Parse error in expression 0: unexpected operator
+                "OR true"
+                
+            You should continue past the first error and detect as much as you can.
+            You may very well have multiple incorrect and correct expressions in a single line.
+
+            
+
+Methodology
+    Do not use sort(), strtok(), or anything from the ctype.h or string.h libraries. Do not use regular expressions or any other built-in tokenizer. The object of this assignment is not to hunt through the installed libraries and engage in some heavy shoehorning, but to write some code working with strings and characters and gain some insight in to how to interpret error messages.
+
+    This can seem daunting, but be careful to plan first. The range of things you can get is indeed large, however only certain things are allowed. All you need to do is enforce the structure of what is allowed, and that is not a very long list of possibilities.
+    
+    I'd recommend you go by this strategy:
+    Identification: (find everything important)
+        0. find all tokens
+            - make them in to strings and print them out
+        1. find all expressions
+            - assemble tokens unti you see ';'
+        2. find all operators
+            - scan through expressions for something in your operator list (there are only 7 possibilities)
+        3. find all operands
+            - scan through expressions for something in your operand list (there are only 12 possibilities)    
+        Once you are here, you have pretty much all you need.
+    
+    Computation: (abstract basic things as functions)
+        0. Write a function to check if:
+            - a character is in your arithmetic operand list
+            - a string is in your logical operand list
+        1. Write a function to check if a character/string is in your operator list
+        2. Write a function to take a whole line and give you one expression at a time
+        3. Write a function to take a whole expression and give you one token at a time
+
+    Evaluation: (assemble your functions for fun and profit!)
+        Feed your input line to your expression finder, and as long as it doesn't run out of expressions:
+            Feed your next expressions to your token finder, and as long as it doesn't run out of tokens:
+                (no/too few tokens? output an error)
+                Feed the first token to your token classifier .. it should be your first operand, or NOT
+                    - if an error, output
+                Feed the next token to your token classifier .. it should be your operator or NOT's operand
+                    - if an error, output
+                If not NOT, feed the next token to your token classifier .. it should be your last operator
+                    - if an error, output
+                (too many tokens? output an error)
+                    
+    You are free not to follow this strategy, however do not sit down and try to start writing code immediately. Without some planning you can easily get very tangled up.
+
+    
+
+Results
+    Note: This project is individual. Be sure to do your own work.
+
+    Do:
+       Make sure to put quotes around your outputted error fragments.
+        Make sure you free all dynamic memory you use.
+        Make sure you never Segmentation Fault. No matter what your code outputs, Segmentation Fault makes it instantly incorrect.
+        Make sure you can handle odd or obviously broken input and that you always check the number of arguments you have before you start using them. If you don't get the correct number of arguments, print an error and stop.
+
+    Do not:
+        Do not use any Makefiles, even if you know how to write them and how they work. We won't run them.    
+        Do not use any extra compiler flags or versions of C. For instance; do not use fsanitize or C99. Just compile with gcc.
+        Do not use sort(), strtok(), or anything from the ctype.h or string.h libraries.
+        Do not use regular expressions or any other built-in tokenizer.
+    
+    
+    You should submit text and one file on Sakai:
+    file:
+        check.c
+            
+        check.c should be compilable to an executable with:
+            gcc -o check.c check
+            
+    text:
+        your test plan
+        
+        Your test plan should detail how you tested your code; what inputs did you use and why.
+
+        
+        
+Evaluation:
+    Grading will be based on:
+        - your code's function when run against a variety of test inputs
+        - the completeness of your testplan
+        - your code's readability and modularity
+
+
+
+FAQ:
+Based on recent questions, here is an error inventory some examples and rules:
+
+General Rules
+- scan/parse left to right (don't backtrack)
+- first operator found sets expression type
+- first token must be an operand unless it is NOT
+- only valid characters after last operand in an expression are ';' or '\0'
+- exactly one whitespace between each token (a space after a space is a blank token)
+- seeing an unknown identifier at the start of an expression resets your evaluation, so you presume the next token is the expression start
+
+(examples below are only descriptive, not necessarily all errors are catalogued)
+(more than one error may be caused by the same token/identifier/whatever (see below!))
+operator:
+    unknown:           "1 a 2"
+    unexpected        "+ 2"
+    missing               "1"
+    type mismatch  (if you want to use it ... see below)
+    
+operand:
+    unknown             "1 + a"
+    unexpected        "1 + 2 1"
+    missing               "1 + "
+    type mismatch    "1 + true"   "1 AND 2"
+         (any type mismatch is only the operands' faults because the operator sets the expression type)
+        > the above is truly only a semantic issue, since the number of errors will be the same and for the same reason, however since I talked about this in class as an error being caused by a different operator type, I'll count them the same way. If you throw two operand type mismatches or one operator type and one operand type mismatch for this error type, I'll count both the same way.
+
+    if your first token is broken/unknown:
+        unknown identifier:        "a NOT true"     "a + 2"
+        (resets parse, presume next token is the first of the expression)
+        (yes, this could (and likely should!) generate more errors)
+                                                    
+expression:
+    wasn't ended (expected ";" found ... )                "1 + 2 3 4 5 6 7 8 9"
+    incomplete (expected stuff, found ... )                "1 + 3;"
+
+
+
+(All errors in the lines below are listed, although these are not correctly formatted error messages)
+        "1 a 2"
+        Unknown operator
+        
+        "+ 2"
+        Unexpected operator
+        
+        "1"
+        Missing operator
+        
+        "1 AND 2"
+        Operand type mismatch
+        Operator type mismatch
+        
+        "true + 2"
+        Operand type mismatch
+    
+        "1 + a"
+        Unknown operand
+
+        "a + 1"
+        Unknown identifier
+        Unexpected operator
+                
+        "a NOT true"
+        Unknown identifier
+        
+        "1 + 2 1"
+        Expression wasn't ended
+        Unexpected operand
+                
+        "1 + "
+        Missing operand
+        
+        "1 + 2 3 4 5 6 7 8 9"
+        Expression wasn't ended
+        Unexpected operand
+        Unexpected operand
+        Unexpected operand
+        Unexpected operand
+        Unexpected operand
+        Unexpected operand
+        Unexpected operand
+        
+        "1 + 3;"
+        Expression incomplete
